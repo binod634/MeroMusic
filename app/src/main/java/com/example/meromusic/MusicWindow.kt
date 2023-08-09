@@ -175,11 +175,11 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically) {
                       Icon(painter = painterResource(id = R.drawable.previous), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.playPreviousMusic(context) })
-                      Icon(painter = painterResource(id = R.drawable.rewind), contentDescription = null, tint = Color.Unspecified)
+                      Icon(painter = painterResource(id = R.drawable.rewind), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.MediaSeek(currentPosition.value - 5) })
                       Icon(painter = painterResource(id = if (isMusicPlaying) R.drawable.pause else R.drawable.play ), contentDescription = null, tint = Color.Unspecified, modifier = Modifier
                           .size(56.dp)
                           .clickable { musicCore.togglePlaying() })
-                      Icon(painter = painterResource(id = R.drawable.seekforeward), contentDescription = null, tint = Color.Unspecified)
+                      Icon(painter = painterResource(id = R.drawable.seekforeward), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.MediaSeek(currentPosition.value + 5) })
                       Icon(painter = painterResource(id = R.drawable.nextmusic), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.playNextMusic(context) })
                     }
                     Spacer(modifier = Modifier
