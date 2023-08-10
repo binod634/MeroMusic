@@ -56,8 +56,8 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
     val isMusicStarted by musicCore.isStarted.collectAsState()
     val isMusicPlaying by musicCore.isPlaying.collectAsState()
     val sliderPosition = remember { mutableStateOf(0.3f) }
-    val visibleRepeat  = remember { mutableStateOf(true) }
-    val visibleShuffle  = remember { mutableStateOf(false) }
+    val isMediaRepeatSet by musicCore.isRepeat.collectAsState()
+    val isMediaShuffleSet by musicCore.isShuffle.collectAsState()
     val rotationSpeed = remember { mutableStateOf(1f) }
     var rotationState by remember { mutableStateOf(0f) }
     val mediaProgressPercentage = remember { mutableStateOf(0f) }
@@ -137,11 +137,11 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
                     }
                     Row(modifier = Modifier.align(Alignment.End), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         Icon(painter = painterResource(id = R.drawable.repeatall), contentDescription = null,  tint = Color.Unspecified, modifier = Modifier
-                            .alpha(if (visibleRepeat.value) 1f else 0.4f)
-                            .clickable { visibleRepeat.value = !visibleRepeat.value })
+                            .alpha(if (isMediaRepeatSet) 1f else 0.4f)
+                            .clickable { musicCore.toggleMediaRepeat() })
                         Icon(painter = painterResource(id = R.drawable.shuffle), contentDescription = null,  tint = Color.Unspecified, modifier = Modifier
-                            .alpha(if (visibleShuffle.value) 1f else 0.4f)
-                            .clickable { visibleShuffle.value = !visibleShuffle.value })
+                            .alpha(if (isMediaShuffleSet) 1f else 0.4f)
+                            .clickable { musicCore.toggleMediaShuffle() })
                     }
                     Column {
                         Row(
@@ -192,7 +192,9 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
             modifier = Modifier
                 .padding(start = 24.dp, top = 32.dp)
         ) {
-            Icon(Icons.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF0947A2), modifier = Modifier.size(32.dp).clickable { backToHome() })
+            Icon(Icons.Filled.ArrowBack, contentDescription = null, tint = Color(0xFF0947A2), modifier = Modifier
+                .size(32.dp)
+                .clickable { backToHome() })
         }
 }
 
