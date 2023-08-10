@@ -48,6 +48,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -299,7 +300,7 @@ fun IndividualMusicRow(title:String) {
 }
 
 @Composable
-fun NewHomeScreen(musicCore: MusicCore,context: Context, playingMusicScreen:(MusicData) -> Unit) {
+fun NewHomeScreen(musicCore: MusicCore,context: Context, playingMusicScreen:(MusicData) -> Unit, oldPlaying:() -> Unit) {
     val isMusicStarted by musicCore.isStarted.collectAsState()
     val isMusicPlaying by musicCore.isPlaying.collectAsState()
     val currentPlayingMusic by musicCore.currentlyStartedMusicData.collectAsState()
@@ -331,10 +332,16 @@ fun NewHomeScreen(musicCore: MusicCore,context: Context, playingMusicScreen:(Mus
                     modifier = Modifier.padding(end = 24.dp, start = 24.dp)
                 ) {
                     items(musicCore.musicFiles.size) { it ->
+                        var isCurrentMusicPlaying = false
+                        if (isMusicStarted) {
+                            if (currentPlayingMusic!!.id == musicCore.musicFiles[it].id) {
+                                isCurrentMusicPlaying = true
+                            }
+                        }
                         ShowSelectedMusicRow(
                             musicCore.musicFiles[it],
-                            isThisPlaying = musicCore.musicFiles[it] == currentPlayingMusic,
-                            showCurrentSelectedMusic = { musicData -> playingMusicScreen(musicData) }
+                            isCurrentMusicPlaying,
+                            showCurrentSelectedMusic = { musicData -> if (isCurrentMusicPlaying) oldPlaying() else playingMusicScreen(musicData) }
                         )
                     }
                 }
@@ -351,7 +358,7 @@ fun ShowSelectedMusicRow(musicData : MusicData,isThisPlaying: Boolean, showCurre
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xff0883D9))
+                .background(if (isThisPlaying) Color(0xffFF0000) else Color(0xff0883D9))
                 .height(60.dp)
                 .clickable { showCurrentSelectedMusic(musicData) },
             horizontalArrangement = Arrangement.spacedBy(16.dp),
@@ -360,7 +367,7 @@ fun ShowSelectedMusicRow(musicData : MusicData,isThisPlaying: Boolean, showCurre
             Box(modifier = Modifier.padding(start = 16.dp,top = 8.dp,bottom = 8.dp)) {
                 Image(painterResource(id = R.drawable.kingpng), contentDescription = null)
             }
-            Text(text = musicData.title, style = MaterialTheme.typography.labelSmall, maxLines = 1,modifier = Modifier.padding(end = 16.dp))
+            Text(text = musicData.title, style =  MaterialTheme.typography.labelSmall, maxLines = 1,modifier = Modifier.padding(end = 16.dp), color = if (isThisPlaying) Color.Green else Color.Unspecified)
         }
     }
 }

@@ -154,5 +154,12 @@ class MusicCore:ViewModel()   {
     fun MediaSeek(seekToTime:Int) {
         mediaPlayer!!.seekTo(seekToTime)
     }
-    
+
+    fun toggleMediaRepeat() {
+        _isRepeat.value =  !(_isRepeat.value)
+    }
+
+    fun toggleMediaShuffle() {
+        _isShuffle.value = !(_isShuffle.value)
+    }
 }

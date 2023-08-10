@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController = navController, startDestination = MusicScreens.Home.name) {
                         composable(route = MusicScreens.Home.name) {
-                            NewHomeScreen(musicCore,context, playingMusicScreen = { musicData -> musicCore.startPlaying(context,musicData);navController.navigate(MusicScreens.PlayingMusicScreen.name) })
+                            NewHomeScreen(musicCore,context, playingMusicScreen = { musicData -> musicCore.startPlaying(context,musicData);navController.navigate(MusicScreens.PlayingMusicScreen.name) }, oldPlaying = { navController.navigate(MusicScreens.PlayingMusicScreen.name) })
                         }
                         composable(route = MusicScreens.PlayingMusicScreen.name) {
                             PrimaryMusicScreen( musicCore,context, backToHome = { navController.popBackStack() } )
