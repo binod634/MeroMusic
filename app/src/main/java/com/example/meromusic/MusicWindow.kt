@@ -2,6 +2,7 @@ package com.example.meromusic
 
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,7 +52,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Unit) {
     val currentMusicData by musicCore.currentlyStartedMusicData.collectAsState()
-    val totalTime = currentMusicData!!.duration.toInt()
     val currentPosition = remember { mutableStateOf(0) }
     val isMusicStarted by musicCore.isStarted.collectAsState()
     val isMusicPlaying by musicCore.isPlaying.collectAsState()
@@ -73,8 +73,8 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
     LaunchedEffect(isMusicStarted) {
         while (isMusicStarted) {
             currentPosition.value = musicCore.getMediaPlayerCurrentDuration()
-            mediaProgressPercentage.value = currentPosition.value.toFloat() / totalTime
-            delay(250)
+            mediaProgressPercentage.value = currentPosition.value.toFloat() / currentMusicData!!.duration.toFloat()
+            delay(100)
         }
     }
 
@@ -133,7 +133,7 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 1
                         )
-                        Text(text = "By Alen Walker", maxLines = 1)
+                        Text(text = currentMusicData!!.artist, maxLines = 1)
                     }
                     Row(modifier = Modifier.align(Alignment.End), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                         Icon(painter = painterResource(id = R.drawable.repeatall), contentDescription = null,  tint = Color.Unspecified, modifier = Modifier
@@ -154,15 +154,15 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
                                 style = MaterialTheme.typography.labelSmall
                             )
                             Text(
-                                text = formatMilliseconds(totalTime),
+                                text = formatMilliseconds(currentMusicData!!.duration.toInt()),
                                 style = MaterialTheme.typography.labelSmall
                             )
                         }
                         Slider(
                             value = mediaProgressPercentage.value,
                             onValueChange = {
-                                musicCore.MediaSeek((it * totalTime).toInt());mediaProgressPercentage.value =
-                                it
+                                mediaProgressPercentage.value = it;
+                                musicCore.MediaSeek((it * currentMusicData!!.duration).toInt());
                             },
                             colors = SliderDefaults.colors(
                                 Color(0xff725EA9),
@@ -175,11 +175,11 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically) {
                       Icon(painter = painterResource(id = R.drawable.previous), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.playPreviousMusic(context) })
-                      Icon(painter = painterResource(id = R.drawable.rewind), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.MediaSeek(currentPosition.value - 5) })
+                      Icon(painter = painterResource(id = R.drawable.rewind), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.MediaSeek(currentPosition.value - 5*1000) })
                       Icon(painter = painterResource(id = if (isMusicPlaying) R.drawable.pause else R.drawable.play ), contentDescription = null, tint = Color.Unspecified, modifier = Modifier
                           .size(56.dp)
                           .clickable { musicCore.togglePlaying() })
-                      Icon(painter = painterResource(id = R.drawable.seekforeward), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.MediaSeek(currentPosition.value + 5) })
+                      Icon(painter = painterResource(id = R.drawable.seekforeward), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.MediaSeek(currentPosition.value + 5*1000) })
                       Icon(painter = painterResource(id = R.drawable.nextmusic), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.playNextMusic(context) })
                     }
                     Spacer(modifier = Modifier

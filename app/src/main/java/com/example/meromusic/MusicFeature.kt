@@ -147,8 +147,11 @@ class MusicCore:ViewModel()   {
     }
 
     fun getMediaPlayerCurrentDuration():Int {
-        Log.d("Media Duration",mediaPlayer!!.currentPosition.toString())
         return mediaPlayer!!.currentPosition
+    }
+
+    fun getMediaPlayerTotalDuration():Int {
+        return mediaPlayer!!.duration
     }
 
     fun MediaSeek(seekToTime:Int) {
