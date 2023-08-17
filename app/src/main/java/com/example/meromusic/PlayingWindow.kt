@@ -2,7 +2,6 @@ package com.example.meromusic
 
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -171,7 +170,8 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
                         )
                     }
                     Row(modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .height(70.dp),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically) {
                       Icon(painter = painterResource(id = R.drawable.previous), contentDescription = null, tint = Color.Unspecified, modifier = Modifier.clickable { musicCore.playPreviousMusic(context) })

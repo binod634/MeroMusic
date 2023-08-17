@@ -42,6 +42,9 @@ class MusicCore:ViewModel()   {
 
     fun fetchMusicFiles(contentResolver: ContentResolver) {
 
+        // for not stressing State variable
+        val localMusicFiles = mutableListOf<MusicData>()
+
         val selection = "${MediaStore.Audio.Media.IS_MUSIC} != 0"
         val sortOrder = "${MediaStore.Audio.Media.TITLE} ASC"
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
@@ -70,7 +73,7 @@ class MusicCore:ViewModel()   {
 
             while (innerCursor.moveToNext()) {
                 if (File(innerCursor.getString(filePathColumn)).exists()) {
-                    musicFiles.add(
+                    localMusicFiles.add(
                         MusicData(
                             innerCursor.getLong(idColumn),
                             innerCursor.getString(titleColumn),
@@ -83,6 +86,7 @@ class MusicCore:ViewModel()   {
                 }
             }
         }
+        musicFiles.addAll(localMusicFiles)
     }
 
     fun startPlaying(context:Context, musicData:MusicData) {

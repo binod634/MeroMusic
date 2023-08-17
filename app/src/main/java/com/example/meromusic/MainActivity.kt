@@ -1,18 +1,23 @@
 package com.example.meromusic
 
 import android.content.Context
+import android.icu.text.CaseMap.Title
+import android.icu.text.CaseMap.toTitle
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.meromusic.AppScreens.Screens
 import com.example.meromusic.ui.theme.MeroMusicTheme
 
 class MainActivity : ComponentActivity() {
@@ -40,11 +45,16 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavigation(context:Context,musicCore:MusicCore) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = MusicScreens.Home.name) {
-        composable(route = MusicScreens.Home.name) {
-                NewHomeScreen(musicCore,context, playingMusicScreen = { musicData -> musicCore.startPlaying(context,musicData);navController.navigate(MusicScreens.PlayingMusicScreen.name) }, oldPlaying = { navController.navigate(MusicScreens.PlayingMusicScreen.name) })
+    NavHost(navController = navController, startDestination = Screens.Splash.name) {
+        composable(route = Screens.Splash.name) {
+            SplashScreen( context, musicCore, navToHome = { navController.navigate(Screens.Home.name);navController.popBackStack() })
+        }
+        composable(route = Screens.Home.name) {
+                NewHomeScreen(musicCore,context, playingMusicScreen = { musicData -> musicCore.startPlaying(context,musicData);navController.navigate(
+                    Screens.PlayingMusicScreen.name) }, oldPlaying = { navController.navigate(
+                    Screens.PlayingMusicScreen.name) })
             }
-        composable(route = MusicScreens.PlayingMusicScreen.name) {
+        composable(route = Screens.PlayingMusicScreen.name) {
             PrimaryMusicScreen( musicCore,context, backToHome = { navController.popBackStack() } )
             }
     }
