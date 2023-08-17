@@ -47,7 +47,7 @@ fun AppNavigation(context:Context,musicCore:MusicCore) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screens.Splash.name) {
         composable(route = Screens.Splash.name) {
-            SplashScreen( context, musicCore, navToHome = { navController.navigate(Screens.Home.name);navController.popBackStack() })
+            SplashScreen( context, musicCore, navToHome = { navController.navigate(Screens.Home.name) })
         }
         composable(route = Screens.Home.name) {
                 NewHomeScreen(musicCore,context, playingMusicScreen = { musicData -> musicCore.startPlaying(context,musicData);navController.navigate(

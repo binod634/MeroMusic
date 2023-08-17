@@ -64,7 +64,9 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
     LaunchedEffect(rotationSpeed.value) {
         while (true) {
             withFrameMillis { frameTime ->
-                rotationState += rotationSpeed.value * frameTime / 1e9f // Adjust speed as needed
+                if (isMusicPlaying) {
+                    rotationState += rotationSpeed.value * frameTime / 1e9f // Adjust speed as needed
+                }
             }
         }
     }

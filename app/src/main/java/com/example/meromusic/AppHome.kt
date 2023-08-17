@@ -1,11 +1,12 @@
 package com.example.meromusic
 
 import android.content.Context
+import android.graphics.Paint.Align
+import android.text.Layout
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,8 +22,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ThumbUp
@@ -310,22 +314,19 @@ fun NewHomeScreen(musicCore: MusicCore,context: Context, playingMusicScreen:(Mus
                         radius = 3500f,
                         center = Offset(1200/1f, 4000/1f)
                     ))) {
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.2f),
+                    .fillMaxWidth()
+                    .height(200.dp)
             ) {
-                Text(
-                    text = "${musicCore.musicFiles.size} Music Found",
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier.align(Alignment.Center)
-                )
+                HomeHeader()
+                ShowRecommendationRow()
             }
-            Box(
+            Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.8f),
+                    .fillMaxSize(),
             ) {
+                Text("Local music")
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     modifier = Modifier.padding(end = 24.dp, start = 24.dp)
@@ -347,10 +348,15 @@ fun NewHomeScreen(musicCore: MusicCore,context: Context, playingMusicScreen:(Mus
             }
         }
     }
-
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun HomeHeader() {
+    Box(contentAlignment = Alignment.Center,modifier = Modifier.fillMaxWidth()) {
+        Text("Musically")
+    }
+}
+
 @Composable
 fun ShowSelectedMusicRow(musicData : MusicData,isThisPlaying: Boolean, showCurrentSelectedMusic:(MusicData) -> Unit) {
     Card(elevation = CardDefaults.cardElevation(16.dp)) {
@@ -370,35 +376,35 @@ fun ShowSelectedMusicRow(musicData : MusicData,isThisPlaying: Boolean, showCurre
         }
     }
 }
-//
-//@Preview
-//@Composable
-//fun ShowNewMusicHome() {
-//    NewMusicHomeSreen()
-//}
 
-
-
-// just a comment to check for git pusgh
-
-
-//
-//
-//@Preview
-//@Composable
-//fun ShowTopBAr() {
-//    ShowMusicBar(MusicData(1,"something","","",1000L,"".toUri()),isMusicStarted = true, isMusicPlaying = true, PauseAndPlayMusic = {})
-//}
-
-
-@Preview
 @Composable
-fun ShowRowShadow() {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
+fun ShowRecommendationRow() {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text("Our Recommendation")
+        LazyRow(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(text = "Someone")
-            Text(text = "Somethings")
+            items(10) {
+                boxIcon(R.drawable.aylex)
+            }
         }
+    }
+}
+
+@Composable
+fun boxIcon(img: Int) {
+    Card(elevation = CardDefaults.cardElevation(16.dp), shape = RoundedCornerShape(12.dp), modifier = Modifier.size(100.dp)) {
+        Image(painter = painterResource(img), contentDescription = null)
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun showPreview() {
+    Column {
+        Spacer(modifier = Modifier.height(50.dp))
+        ShowRecommendationRow()
+    }
 }
