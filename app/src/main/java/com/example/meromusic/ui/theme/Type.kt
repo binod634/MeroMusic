@@ -6,6 +6,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.meromusic.R
 import com.example.meromusic.R.font.rubix
 import com.example.meromusic.R.font.kenia
 
@@ -17,19 +18,28 @@ val keniaFont = FontFamily(
     Font(kenia)
 )
 
+val monotoon = FontFamily(
+    Font(R.font.monotoon)
+
+)
+
+val justanotherhand = FontFamily(
+    Font(R.font.justanotherhand)
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
+    titleLarge = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight.Bold,
+        fontSize = 28.sp
+    ),
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
-    ),
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Bold,
-        fontSize = 28.sp
     ),
     bodyMedium = TextStyle(
         fontFamily  = rubixfont,
@@ -49,22 +59,15 @@ val Typography = Typography(
         fontFamily = keniaFont,
         fontWeight = FontWeight.Normal,
         fontSize = 32.sp
-    )
-
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
     ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
+    labelLarge =  TextStyle(
+        fontFamily = monotoon,
+        fontWeight = FontWeight.Normal,
+        fontSize = 40.sp
+    ),
+    headlineSmall =  TextStyle(
+        fontFamily = justanotherhand,
+        fontWeight = FontWeight.Normal,
+        fontSize = 24.sp
     )
-    */
 )

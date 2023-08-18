@@ -54,7 +54,6 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
     val currentPosition = remember { mutableStateOf(0) }
     val isMusicStarted by musicCore.isStarted.collectAsState()
     val isMusicPlaying by musicCore.isPlaying.collectAsState()
-    val sliderPosition = remember { mutableStateOf(0.3f) }
     val isMediaRepeatSet by musicCore.isRepeat.collectAsState()
     val isMediaShuffleSet by musicCore.isShuffle.collectAsState()
     val rotationSpeed = remember { mutableStateOf(1f) }
@@ -162,8 +161,8 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
                         Slider(
                             value = mediaProgressPercentage.value,
                             onValueChange = {
-                                mediaProgressPercentage.value = it;
-                                musicCore.MediaSeek((it * currentMusicData!!.duration).toInt());
+                                mediaProgressPercentage.value = it
+                                musicCore.MediaSeek((it * currentMusicData!!.duration).toInt())
                             },
                             colors = SliderDefaults.colors(
                                 Color(0xff725EA9),
@@ -200,9 +199,10 @@ fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Uni
         }
 }
 
+
 @Preview
 @Composable
-fun RotatingImage( rotationSpeed: Float = 1f) {
+fun RotatingImage(rotationSpeed: Float = 1f) {
     var rotationState by remember { mutableStateOf(0f) }
 
     LaunchedEffect(rotationSpeed) {

@@ -22,6 +22,7 @@ val Yellow90 = Color(0xffeeddaa)
 
 // dark
 val Blue10 = Color(0xFF081441)
+val LightBlue = Color(0xFF024D83)
 //val Blue10 = Color(0xff202041)
 val Gray10 = Color(0xff3c3c3c)
 val Purple10 = Color(0xff237422)
