@@ -67,6 +67,7 @@ class MusicCore:ViewModel()   {
         }
         mediaPlayer = MediaPlayer.create(context,topMusicFiles[id])
         mediaPlayer?.start()
+        _currentlyStartedMusicData.value = null
         _isStarted.value = true
         _isPlaying.value = true
     }
