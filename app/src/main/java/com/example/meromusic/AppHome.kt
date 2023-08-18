@@ -1,5 +1,7 @@
 package com.example.meromusic
 
+import android.content.Context
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,8 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 
@@ -42,16 +44,18 @@ fun NewHomeScreen(
     val isMusicStarted by musicCore.isStarted.collectAsState()
     val currentPlayingMusic by musicCore.currentlyStartedMusicData.collectAsState()
     Box(modifier = Modifier.background(MaterialTheme.colorScheme.primary)) {
-        Column(modifier = Modifier.background(
+        Column(
+            modifier = Modifier.background(
                     brush = Brush.radialGradient(
-                        colors = listOf(Color.White, Color.Transparent),
-                        radius = 3500f,
-                        center = Offset(1200/1f, 4000/1f)
-                    ))) {
-            Spacer(modifier = Modifier.height(32.dp))
+                        colors = listOf(Color.LightGray, Color.Transparent),
+                        radius = 3200f,
+                        center = Offset(1000 /1f, 4000 /1f)
+                    ))
+        ) {
+            Spacer(modifier = Modifier.height(16.dp))
             HomeHeader()
             Spacer(modifier = Modifier.height(32.dp))
-            ShowRecommendationRow()
+            ShowRecommendationRow(context = LocalContext.current,musicCore)
             Spacer(modifier = Modifier.height(32.dp))
             Column(
                 modifier = Modifier
@@ -66,7 +70,7 @@ fun NewHomeScreen(
                     items(musicCore.musicFiles.size) { it ->
                         var isCurrentMusicPlaying = false
                         if (isMusicStarted) {
-                            if (currentPlayingMusic!!.id == musicCore.musicFiles[it].id) {
+                            if (currentPlayingMusic?.id == musicCore.musicFiles[it].id) {
                                 isCurrentMusicPlaying = true
                             }
                         }
@@ -77,6 +81,13 @@ fun NewHomeScreen(
                         )
                     }
                 }
+                Canvas(
+                    modifier = Modifier.fillMaxWidth().height(100.dp),
+                    onDraw = { drawCircle(brush = Brush.radialGradient(
+                        colors = listOf(Color.White, Color.Transparent),
+                        radius = 3500f,
+                        center = Offset(size.width / 2f, size.height / 2f)
+                    )) })
             }
         }
     }
@@ -111,7 +122,7 @@ fun ShowSelectedMusicRow(musicData : MusicData,isThisPlaying: Boolean, showCurre
 }
 
 @Composable
-fun ShowRecommendationRow() {
+fun ShowRecommendationRow(context: Context, musicCore: MusicCore) {
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(start = 24.dp)) {
@@ -121,26 +132,19 @@ fun ShowRecommendationRow() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(10) {
-                BoxIcon(R.drawable.aylex)
+            items(musicCore.topImgFiles.size) {
+                BoxIcon(musicCore.topImgFiles[it]) {
+                    musicCore.playRecommendedMusic(context,it)
+                }
             }
         }
     }
 }
 
 @Composable
-fun BoxIcon(img: Int) {
-    Card(elevation = CardDefaults.cardElevation(16.dp), shape = RoundedCornerShape(12.dp), modifier = Modifier.size(100.dp)) {
+fun BoxIcon(img: Int, playThisMusic:() -> Unit) {
+    Card(elevation = CardDefaults.cardElevation(16.dp), shape = RoundedCornerShape(12.dp), modifier = Modifier.size(100.dp).clickable { playThisMusic() }) {
         Image(painter = painterResource(img), contentDescription = null)
     }
 }
 
-
-@Preview(showBackground = true)
-@Composable
-fun ShowPreview2() {
-    Column {
-        Spacer(modifier = Modifier.height(50.dp))
-        ShowRecommendationRow()
-    }
-}

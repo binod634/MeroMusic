@@ -35,10 +35,41 @@ class MusicCore:ViewModel()   {
     private var _currentlyStartedMusicData:MutableStateFlow<MusicData?> = MutableStateFlow(null)
     val currentlyStartedMusicData = _currentlyStartedMusicData.asStateFlow()
     val musicFiles = mutableListOf<MusicData>()
-
+    val lockedRepeatShuffleState = false
 
     // MediaPlayer object
     private var mediaPlayer:MediaPlayer? = null
+
+    // for top layout Row
+    public val topImgFiles = listOf<Int>(
+        R.drawable.aylex,
+        R.drawable.rabbit,
+        R.drawable.damtaronothing,
+        R.drawable.aylexfighter,
+        R.drawable.aylexfurious,
+        R.drawable.anotherkid,
+        R.drawable.aylexliving
+    )
+
+    public val topMusicFiles = listOf<Int>(
+        R.raw.aylex,
+        R.raw.rabbittheft,
+        R.raw.damatro,
+        R.raw.damtarostart,
+        R.raw.furious,
+        R.raw.aylexokay,
+        R.raw.aylextoo
+    )
+
+    fun playRecommendedMusic(context:Context,id:Int) {
+        if (_isStarted.value) {
+            mediaPlayer?.release()
+        }
+        mediaPlayer = MediaPlayer.create(context,topMusicFiles[id])
+        mediaPlayer?.start()
+        _isStarted.value = true
+        _isPlaying.value = true
+    }
 
     fun fetchMusicFiles(contentResolver: ContentResolver) {
 
@@ -103,7 +134,7 @@ class MusicCore:ViewModel()   {
         }
 
         // TODO: Change this as this isn't always next music But shuffle or Repeat-Once only
-        mediaPlayer!!.setOnCompletionListener { playNextMusic(context) }
+        mediaPlayer!!.setOnCompletionListener { playNewMusic(context) }
         mediaPlayer?.start()
         _isStarted.value = true
         _isPlaying.value = true
