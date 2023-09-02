@@ -1,13 +1,16 @@
-package com.example.meromusic
+package com.example.meromusic.Logics
 
+import android.Manifest
 import android.content.ContentResolver
 import android.content.Context
+import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.provider.MediaStore
-import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
+import com.example.meromusic.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.io.File
@@ -37,11 +40,12 @@ class MusicCore:ViewModel()   {
     val musicFiles = mutableListOf<MusicData>()
     val lockedRepeatShuffleState = false
 
+
     // MediaPlayer object
     private var mediaPlayer:MediaPlayer? = null
 
     // for top layout Row
-    public val topImgFiles = listOf<Int>(
+    val topImgFiles = listOf<Int>(
         R.drawable.aylex,
         R.drawable.rabbit,
         R.drawable.damtaronothing,
@@ -51,7 +55,7 @@ class MusicCore:ViewModel()   {
         R.drawable.aylexliving
     )
 
-    public val topMusicFiles = listOf<Int>(
+    val topMusicFiles = listOf<Int>(
         R.raw.aylex,
         R.raw.rabbittheft,
         R.raw.damatro,
@@ -72,7 +76,7 @@ class MusicCore:ViewModel()   {
         _isPlaying.value = true
     }
 
-    fun fetchMusicFiles(contentResolver: ContentResolver) {
+    fun fetchMusicFiles(contentResolver: ContentResolver):Boolean {
 
         // for not stressing State variable
         val localMusicFiles = mutableListOf<MusicData>()
@@ -119,9 +123,10 @@ class MusicCore:ViewModel()   {
             }
         }
         musicFiles.addAll(localMusicFiles)
+        return true
     }
 
-    fun startPlaying(context:Context, musicData:MusicData) {
+    fun startPlaying(context:Context, musicData: MusicData) {
         if (mediaPlayer?.isPlaying == true) {
             mediaPlayer?.release()
         }
@@ -178,7 +183,7 @@ class MusicCore:ViewModel()   {
         mediaPlayer?.release()
     }
 
-    fun currentPlaying():MusicData? {
+    fun currentPlaying(): MusicData? {
         return _currentlyStartedMusicData.value
     }
 
@@ -201,4 +206,10 @@ class MusicCore:ViewModel()   {
     fun toggleMediaShuffle() {
         _isShuffle.value = !(_isShuffle.value)
     }
+
+}
+
+
+fun checkPermission(context:Context):Boolean {
+    return ContextCompat.checkSelfPermission(context,Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 }

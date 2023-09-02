@@ -46,10 +46,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.meromusic.Logics.MusicCore
 import kotlinx.coroutines.delay
 
 @Composable
-fun PrimaryMusicScreen(musicCore: MusicCore,context:Context,backToHome:() -> Unit) {
+fun PrimaryMusicScreen(musicCore: MusicCore, context:Context, backToHome:() -> Unit) {
     val currentMusicData by musicCore.currentlyStartedMusicData.collectAsState()
     val currentPosition = remember { mutableStateOf(0) }
     val isMusicStarted by musicCore.isStarted.collectAsState()

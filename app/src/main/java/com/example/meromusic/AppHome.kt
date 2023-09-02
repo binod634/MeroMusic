@@ -1,7 +1,6 @@
 package com.example.meromusic
 
 import android.content.Context
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,6 +32,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.meromusic.Logics.MusicCore
+import com.example.meromusic.Logics.MusicData
 
 
 @Composable
@@ -67,7 +68,7 @@ fun NewHomeScreen(
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ) {
-                    items(musicCore.musicFiles.size) { it ->
+                    items(musicCore.musicFiles.size) {
                         var isCurrentMusicPlaying = false
                         if (isMusicStarted) {
                             if (currentPlayingMusic?.id == musicCore.musicFiles[it].id) {
@@ -81,13 +82,6 @@ fun NewHomeScreen(
                         )
                     }
                 }
-                Canvas(
-                    modifier = Modifier.fillMaxWidth().height(100.dp),
-                    onDraw = { drawCircle(brush = Brush.radialGradient(
-                        colors = listOf(Color.White, Color.Transparent),
-                        radius = 3500f,
-                        center = Offset(size.width / 2f, size.height / 2f)
-                    )) })
             }
         }
     }
@@ -102,7 +96,7 @@ fun HomeHeader() {
 }
 
 @Composable
-fun ShowSelectedMusicRow(musicData : MusicData,isThisPlaying: Boolean, showCurrentSelectedMusic:(MusicData) -> Unit) {
+fun ShowSelectedMusicRow(musicData : MusicData, isThisPlaying: Boolean, showCurrentSelectedMusic:(MusicData) -> Unit) {
     Card(elevation = CardDefaults.cardElevation(16.dp)) {
         Row(
             modifier = Modifier
