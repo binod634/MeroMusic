@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,13 +15,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.materialIcon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemColors
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,6 +51,7 @@ import com.example.meromusic.Logics.MusicCore
 import com.example.meromusic.Logics.MusicData
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewHomeScreen(
     musicCore: MusicCore,
@@ -44,42 +60,62 @@ fun NewHomeScreen(
 ) {
     val isMusicStarted by musicCore.isStarted.collectAsState()
     val currentPlayingMusic by musicCore.currentlyStartedMusicData.collectAsState()
-    Box(modifier = Modifier.background(MaterialTheme.colorScheme.primary)) {
-        Column(
-            modifier = Modifier.background(
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    /*
+    Content is Working. so don't remove this if you don't know what you are doing.
+    */
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            ModalDrawerSheet(drawerContainerColor = MaterialTheme.colorScheme.primary, drawerTonalElevation = 8.dp, modifier = Modifier.width(IntrinsicSize.Max)) {
+//                NavigationDrawerItem(label = { Text(text = "Hello") }, selected = false, onClick = { /*TODO*/ })
+            }
+        }) {
+        Box(modifier = Modifier.background(MaterialTheme.colorScheme.primary)) {
+            Column(
+                modifier = Modifier.background(
                     brush = Brush.radialGradient(
                         colors = listOf(Color.LightGray, Color.Transparent),
                         radius = 3200f,
-                        center = Offset(1000 /1f, 4000 /1f)
-                    ))
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            HomeHeader()
-            Spacer(modifier = Modifier.height(32.dp))
-            ShowRecommendationRow(context = LocalContext.current,musicCore)
-            Spacer(modifier = Modifier.height(32.dp))
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(end = 24.dp, start = 24.dp)
+                        center = Offset(1000 / 1f, 4000 / 1f)
+                    )
+                )
             ) {
-                Text("Local music", style = MaterialTheme.typography.headlineSmall)
-                Spacer(modifier = Modifier.height(4.dp))
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
+
+                // App screen showing Recommendation and music lists
+                Spacer(modifier = Modifier.height(16.dp))
+                HomeHeader()
+                Spacer(modifier = Modifier.height(32.dp))
+                ShowRecommendationRow(context = LocalContext.current, musicCore)
+                Spacer(modifier = Modifier.height(32.dp))
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(end = 24.dp, start = 24.dp)
                 ) {
-                    items(musicCore.musicFiles.size) {
-                        var isCurrentMusicPlaying = false
-                        if (isMusicStarted) {
-                            if (currentPlayingMusic?.id == musicCore.musicFiles[it].id) {
-                                isCurrentMusicPlaying = true
+                    Text("Local music", style = MaterialTheme.typography.headlineSmall)
+                    Spacer(modifier = Modifier.height(4.dp))
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        items(musicCore.musicFiles.size) {
+                            var isCurrentMusicPlaying = false
+                            if (isMusicStarted) {
+                                if (currentPlayingMusic?.id == musicCore.musicFiles[it].id) {
+                                    isCurrentMusicPlaying = true
+                                }
                             }
+                            ShowSelectedMusicRow(
+                                musicCore.musicFiles[it],
+                                isCurrentMusicPlaying,
+                                showCurrentSelectedMusic = { musicData ->
+                                    if (isCurrentMusicPlaying) oldPlaying() else playingMusicScreen(
+                                        musicData
+                                    )
+                                }
+                            )
                         }
-                        ShowSelectedMusicRow(
-                            musicCore.musicFiles[it],
-                            isCurrentMusicPlaying,
-                            showCurrentSelectedMusic = { musicData -> if (isCurrentMusicPlaying) oldPlaying() else playingMusicScreen(musicData) }
-                        )
                     }
                 }
             }
@@ -137,7 +173,9 @@ fun ShowRecommendationRow(context: Context, musicCore: MusicCore) {
 
 @Composable
 fun BoxIcon(img: Int, playThisMusic:() -> Unit) {
-    Card(elevation = CardDefaults.cardElevation(16.dp), shape = RoundedCornerShape(12.dp), modifier = Modifier.size(100.dp).clickable { playThisMusic() }) {
+    Card(elevation = CardDefaults.cardElevation(16.dp), shape = RoundedCornerShape(12.dp), modifier = Modifier
+        .size(100.dp)
+        .clickable { playThisMusic() }) {
         Image(painter = painterResource(img), contentDescription = null)
     }
 }
